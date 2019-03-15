@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthenticationService} from '../../services/authentication.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-admin-signin',
@@ -11,7 +12,9 @@ export class AdminSigninComponent implements OnInit {
 
   protected adminSignInForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) {
+  constructor(private formBuilder: FormBuilder,
+              private authenticationService: AuthenticationService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -28,7 +31,14 @@ export class AdminSigninComponent implements OnInit {
   onAuth() {
     const email = this.adminSignInForm.get('email').value;
     const password = this.adminSignInForm.get('password').value;
-    this.authenticationService.signInUser(email, password);
+    this.authenticationService.signInUser(email, password).then(
+      () => {
+        this.router.navigate(['/admin', 'dashboard']);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 
 }
