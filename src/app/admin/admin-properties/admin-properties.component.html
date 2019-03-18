@@ -1,4 +1,4 @@
-<div class="rounded dhadow bg-white p-5">
+<div class="rounded shadow bg-white p-5">
   <div class="row">
     <div class="col-12 d-flex">
       <h2 class="font-weight-light"><i class="fas fa-home"></i> Biens immobiliers</h2>
@@ -12,7 +12,7 @@
         <h3 class="font-weight-normal pl-3">{{ property.title }}</h3>
         <div class="ml-auto">
           <button class="btn btn-primary m-1"><i class="fas fa-edit"></i></button>
-          <button class="btn btn-danger m-1"><i class="fas fa-trash-alt"></i></button>
+          <button class="btn btn-danger m-1" (click)="onDeleteProperty(property)"><i class="fas fa-trash-alt"></i></button>
         </div>
       </div>
       <p>{{ property.category }} de {{ property.surface }} m², {{ property.rooms }} pièce(s)</p>
