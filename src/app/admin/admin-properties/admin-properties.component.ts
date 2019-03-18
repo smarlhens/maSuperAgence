@@ -4,6 +4,7 @@ import {PropertiesService} from 'src/app/services/properties.service';
 import {Property} from 'src/app/models/Property.model';
 import * as $ from 'jquery';
 import {Subscription} from 'rxjs';
+import {empty} from 'rxjs/internal/Observer';
 
 @Component({
   selector: 'app-admin-properties',
@@ -16,6 +17,9 @@ export class AdminPropertiesComponent implements OnInit, OnDestroy {
   properties: Property[];
   propertiesSubscription: Subscription;
   editProperty: boolean = false;
+  photoUrl: string;
+  photoUploading: boolean = false;
+  photoUploaded: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
               private propertiesService: PropertiesService) {
@@ -57,6 +61,10 @@ export class AdminPropertiesComponent implements OnInit, OnDestroy {
     const description = this.propertyForm.get('description').value;
     const newProperty = new Property(title, category, surface, rooms, description);
 
+    if (this.photoUrl && 0 < this.photoUrl.trim().length) {
+      newProperty.photo = this.photoUrl;
+    }
+
     if (true === this.editProperty) {
       this.propertiesService.updateProperty(newProperty, id);
     } else {
@@ -64,6 +72,8 @@ export class AdminPropertiesComponent implements OnInit, OnDestroy {
     }
     $('#propertiesFormModal').modal('hide');
     this.resetPropertyForm();
+    this.photoUploaded = false;
+    this.photoUrl = '';
   }
 
   ngOnDestroy(): void {
@@ -72,6 +82,9 @@ export class AdminPropertiesComponent implements OnInit, OnDestroy {
 
   onDeleteProperty(property: Property) {
     this.propertiesService.removeProperty(property);
+    if (property.photo) {
+      this.propertiesService.removePropertyPhoto(property.photo);
+    }
   }
 
   onEditProperty(property: Property, id: number) {
@@ -83,6 +96,18 @@ export class AdminPropertiesComponent implements OnInit, OnDestroy {
     this.propertyForm.get('rooms').setValue(property.rooms);
     this.propertyForm.get('description').setValue(property.description);
     this.editProperty = true;
+  }
+
+  detectFile(event) {
+    this.photoUploaded = false;
+    this.photoUploading = true;
+    this.propertiesService.uploadFile(event.target.files[0]).then(
+      (url: string) => {
+        this.photoUrl = url;
+        this.photoUploading = false;
+        this.photoUploaded = true;
+      }
+    );
   }
 
 }
