@@ -28,4 +28,15 @@ export class PropertiesService {
     this.emitProperties();
   }
 
+  removeProperty(property: Property) {
+    
+  }
+
+  getProperties() {
+    firebase.database().ref('/properties').on('value', (data) => {
+      this.properties = data.val() ? data.val() : [];
+      this.emitProperties();
+    });
+  }
+
 }
