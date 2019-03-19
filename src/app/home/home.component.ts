@@ -32,4 +32,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.propertiesSubscription.unsubscribe();
   }
 
+  onViewProperty(id: number) {
+    this.router.navigate(['/property', id]);
+  }
+
 }
